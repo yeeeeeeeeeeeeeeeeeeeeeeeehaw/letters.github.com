@@ -44,9 +44,36 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica N
       margin-top: 1rem;
       text-align: left;
     }
+     /* Star container */
+  .stars {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    background: transparent;
+    overflow: hidden;
+  }
+
+  .star {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: white;
+    border-radius: 50%;
+    opacity: 0.8;
+    animation: twinkle 2s infinite ease-in-out alternate;
+  }
+
+  @keyframes twinkle {
+    0% { opacity: 0.2; transform: scale(1); }
+    100% { opacity: 1; transform: scale(1.4); }
+  }
   </style>
 </head>
 <body>
+ <div class="stars"></div>
   <div id="password-screen">
     <h2>Enter the password to view the letter</h2>
     <input type="password" id="password-input" placeholder="Enter password" />
@@ -100,5 +127,19 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica N
       }
     }
   </script>
+  <script>
+  // Generate stars
+  const starContainer = document.querySelector(".stars");
+  const starCount = 100; // change this for more/less stars
+
+  for (let i = 0; i < starCount; i++) {
+    const star = document.createElement("div");
+    star.classList.add("star");
+    star.style.top = `${Math.random() * 100}%`;
+    star.style.left = `${Math.random() * 100}%`;
+    star.style.animationDuration = `${Math.random() * 2 + 1}s`;
+    starContainer.appendChild(star);
+  }
+</script>
 </body>
 </html>
