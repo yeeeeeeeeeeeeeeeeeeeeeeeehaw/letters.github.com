@@ -47,7 +47,6 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica N
   </style>
 </head>
 <body>
-  <!-- Password Entry Screen -->
   <div id="password-screen">
     <h2>Enter the password to view the letter</h2>
     <input type="password" id="password-input" placeholder="Enter password" />
@@ -56,7 +55,6 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica N
     <p id="error-message" style="color: red; display: none;">Incorrect password. Hint: its the last taylor song we listened to in lowercase.</p>
   </div>
 
-  <!-- Secret Letter Content -->
   <div id="letter">
     <h1>My Secret Letter</h1>
     <div class="hidden-message">
@@ -67,11 +65,11 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica N
       made me feel like i can hold the entire world if it meant holding you. <br><br>
       and when your nose wouldnt stop bleeding? i stayed, not because i felt pressured to. but because like always, leaving never felt like an option. you looked at me that day like i was the one person who wouldnt walk away,<br>
       i mean it. i still do. <br>
-      i know that youre in the same state as mine, replaying everything in a loop, probably afraid, everytime i feel like we are close enough to touch forever, something reminds us we're not allowed to want it.<br>
+      i know that ur in the same state as mine, replaying everything in a loop, probably afraid, everytime i feel like we are close enough to touch forever, something reminds us we're not allowed to want it.<br>
       that distance, the inability to just text all day till our bodies collapse into sleep at night, it consumes. but it hasnt consumed what i feel for you.<br>
-      if anything, it has made me realize how deep you run in my veins, how much i burn when you're not around.<br>
+      if anything, it has made me realize how deep you run in my veins, how much i burn when you're not around. i need u to know that i still carry all of it with me, when im not around, every word every touch every second that passed... it stays with me until i see you again, wont change a thing because u r amazing *wink wink* <br>
       i confess this not because i expect anything but because its the truth.<br>
-      i love you in ways unfathomable, deep down you're the one that knows.<br>
+      i love you in unfathomable ways, deep down you're the one that knows.<br>
       i think about you all the time, literally. in spaces i should be focused somewhere else, i hold back from saying your name out loud in my room. <br>
       you became this substance that runs in my blood, distributed to every cell with every heart beat. a shape in my thoughts <br>
       a name my heart doesnt forget when my voice is quiet.<br>
@@ -86,9 +84,8 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica N
   </div>
 
   <script>
-    const correctPassword = "cardigan"; // Your secret password
+    const correctPassword = "cardigan";
 
-    // Show the password screen on page load
     document.getElementById("password-screen").style.display = "block";
 
     function checkPassword() {
