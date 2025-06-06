@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <title>A Letter</title>
+  <title>Secret Letter</title>
   <style>
     body {
       background-color: #111;
@@ -10,7 +10,32 @@
       padding: 2rem;
       max-width: 800px;
       margin: auto;
+      text-align: center;
     }
+
+    #password-screen, #letter {
+      display: none;
+    }
+
+    input[type="password"] {
+      padding: 0.5rem;
+      font-size: 1rem;
+      border: none;
+      border-radius: 5px;
+      margin-top: 1rem;
+    }
+
+    button {
+      padding: 0.5rem 1rem;
+      font-size: 1rem;
+      margin-top: 1rem;
+      background-color: #333;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
     .hidden-message {
       background-color: #222;
       padding: 1rem;
@@ -21,11 +46,39 @@
   </style>
 </head>
 <body>
-  <h1>My Secret Letter</h1>
-  <p>Hello, you found the letter.</p>
-  <div class="hidden-message">
-    <!-- You can base64 encode or just paste the letter here -->
-    This is a message only for you. I hope you find it in time.
+  <!-- Password Entry Screen -->
+  <div id="password-screen">
+    <h2>Enter the password to view the letter</h2>
+    <input type="password" id="password-input" placeholder="Enter password" />
+    <br>
+    <button onclick="checkPassword()">Unlock</button>
+    <p id="error-message" style="color: red; display: none;">Incorrect password. Hint: its the last taylor song we listened to in lowercase.</p>
   </div>
+
+  <!-- Secret Letter Content -->
+  <div id="letter">
+    <h1>My Secret Letter</h1>
+    <div class="hidden-message">
+      The world is full of secrets. You just uncovered one.
+    </div>
+  </div>
+
+  <script>
+    const correctPassword = "cardigan"; // Your secret password
+
+    // Show the password screen on page load
+    document.getElementById("password-screen").style.display = "block";
+
+    function checkPassword() {
+      const input = document.getElementById("password-input").value;
+      const errorMsg = document.getElementById("error-message");
+      if (input === correctPassword) {
+        document.getElementById("password-screen").style.display = "none";
+        document.getElementById("letter").style.display = "block";
+      } else {
+        errorMsg.style.display = "block";
+      }
+    }
+  </script>
 </body>
 </html>
