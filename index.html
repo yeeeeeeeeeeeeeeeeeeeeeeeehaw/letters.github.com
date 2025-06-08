@@ -62,7 +62,9 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica N
     animation: twinkle 3s infinite ease-in-out alternate;
     filter: drop-shadow(0 0 1px rgba(255,255,255,0.6));
   }
-
+#save-status {
+  transition: opacity 0.3s ease;
+}
   /* Different star sizes */
   .star.small { width: 1px; height: 1px; }
   .star.medium { width: 2px; height: 2px; }
@@ -100,52 +102,94 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica N
     <input type="password" id="password-input" placeholder="Enter password" />
     <br>
     <button onclick="checkPassword()">Unlock</button>
-    <p id="error-message" style="color: red; display: none;">Incorrect password. Hint: its the last taylor song we listened to in lowercase.</p>
+    <p id="error-message" style="color: red; display: none;">Incorrect password. Hint: its your phones passcode.</p>
   </div>
 
-  <div id="letter">
-    <h1>My Secret Letter</h1>
-    <div class="hidden-message">
-    </div>
-  </div>
+<div id="letter">
+  <h1>My Secret Letter</h1>
+  <textarea id="note-area" class="hidden-message" rows="20" style="width: 100%; background-color: #222; color: #eee; border: none; padding: 1rem; font-size: 1rem;"></textarea>
+  <div id="save-status" style="color: #888; margin-top: 0.5rem; font-size: 0.9rem;">Saved</div>
+</div>
 
-  <script>
+<script>
+  document.getElementById("password-screen").style.display = "block";
 
-    document.getElementById("password-screen").style.display = "block";
+  let savedPassword = "";
+  let saveTimeout;
 
-async function checkPassword() {
-  const input = document.getElementById("password-input").value;
-  const errorMsg = document.getElementById("error-message");
+  async function checkPassword() {
+    const input = document.getElementById("password-input").value;
+    const errorMsg = document.getElementById("error-message");
 
-  try {
-    const response = await fetch("https://simplevalidator.onrender.com/check-password", {
+    try {
+      const response = await fetch("https://simplevalidator.onrender.com/check-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ password: input })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        savedPassword = input;
+
+        const noteArea = document.getElementById("note-area");
+        noteArea.value = data.letter;
+        document.getElementById("password-screen").style.display = "none";
+        document.getElementById("letter").style.display = "block";
+        noteArea.addEventListener("input", handleNoteChange);
+      } else {
+        errorMsg.style.display = "block";
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      errorMsg.textContent = "Server error. Try again later.";
+      errorMsg.style.display = "block";
+    }
+  }
+
+function handleNoteChange() {
+  clearTimeout(saveTimeout);
+  showSaveStatus("Saving...");
+
+  saveTimeout = setTimeout(() => {
+    const updatedNote = document.getElementById("note-area").value;
+
+    fetch("https://simplevalidator.onrender.com/save-note", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ password: input })
+      body: JSON.stringify({
+        password: savedPassword,
+        note: updatedNote
+      })
+    }).then(res => {
+      if (res.ok) {
+        showSaveStatus("Saved");
+      } else {
+        showSaveStatus("Save failed");
+      }
+    }).catch(err => {
+      console.error("Save error:", err);
+      showSaveStatus("Save error ❌");
     });
-
-    if (response.ok) {
-      const data = await response.json(); // parse JSON from backend
-      const letterDiv = document.querySelector("#letter .hidden-message");
-      letterDiv.innerHTML = data.letter; // inject the letter content
-      document.getElementById("password-screen").style.display = "none";
-      document.getElementById("letter").style.display = "block";
-    } else {
-      errorMsg.style.display = "block";
-    }
-  } catch (err) {
-    console.error("Error:", err);
-    errorMsg.textContent = "Server error. Try again later.";
-    errorMsg.style.display = "block";
+  }, 1000); // 1s save
+}
+function showSaveStatus(message) {
+  const status = document.getElementById("save-status");
+  status.textContent = message;
+  if (message === "Saved ✓") {
+    setTimeout(() => {
+      status.textContent = "";
+    }, 4000);
   }
 }
-
-  </script>
+</script>
   <script>
   const starContainer = document.querySelector(".stars");
-  const starCount = 150; // More stars for better effect
+  const starCount = 150;
   const starSizes = ["small", "medium", "large"];
   const starColors = ["blue", "yellow", "red", "white"];
 
@@ -153,14 +197,10 @@ async function checkPassword() {
     const star = document.createElement("div");
     star.classList.add("star");
 
-    // Assign random size & color
     star.classList.add(starSizes[Math.floor(Math.random() * starSizes.length)]);
     star.classList.add(starColors[Math.floor(Math.random() * starColors.length)]);
-
     star.style.top = `${Math.random() * 100}%`;
     star.style.left = `${Math.random() * 100}%`;
-
-    // Random animation delay so they twinkle out of sync
     star.style.animationDelay = `${Math.random() * 3}s`;
 
     starContainer.appendChild(star);
