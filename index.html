@@ -191,6 +191,75 @@ function showSaveStatus(message) {
   }
 }
 </script>
+<script>
+  let socket;
+
+  function initWebSocket() {
+    socket = new WebSocket("wss://simplevalidator.onrender.com");
+
+    socket.addEventListener("open", () => {
+      console.log("✅ WebSocket connected");
+    });
+
+    socket.addEventListener("message", (event) => {
+      const data = JSON.parse(event.data);
+
+      if (data.type === "note-update") {
+        const currentNote = document.getElementById("note-area").value;
+
+        // Only update if the note is not being actively edited
+        if (document.activeElement.id !== "note-area") {
+          console.log("🔁 Received updated note from server");
+          document.getElementById("note-area").value = data.note;
+          showSaveStatus("Updated from another device");
+        }
+      }
+    });
+
+    socket.addEventListener("close", () => {
+      console.warn("⚠️ WebSocket disconnected. Trying to reconnect...");
+      setTimeout(initWebSocket, 3000); // Auto-reconnect
+    });
+
+    socket.addEventListener("error", (err) => {
+      console.error("WebSocket error:", err);
+    });
+  }
+
+  // Call this only after successful login
+  async function checkPassword() {
+    const input = document.getElementById("password-input").value;
+    const errorMsg = document.getElementById("error-message");
+
+    try {
+      const response = await fetch("https://simplevalidator.onrender.com/check-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password: input })
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        savedPassword = input;
+
+        const noteArea = document.getElementById("note-area");
+        noteArea.value = data.letter;
+        document.getElementById("password-screen").style.display = "none";
+        document.getElementById("letter").style.display = "block";
+        noteArea.addEventListener("input", handleNoteChange);
+
+        // 👉 Start WebSocket connection
+        initWebSocket();
+      } else {
+        errorMsg.style.display = "block";
+      }
+    } catch (err) {
+      console.error("Error:", err);
+      errorMsg.textContent = "Server error. Try again later.";
+      errorMsg.style.display = "block";
+    }
+  }
+</script>
   <script>
   const starContainer = document.querySelector(".stars");
   const starCount = 75;
@@ -209,28 +278,6 @@ function showSaveStatus(message) {
 
     starContainer.appendChild(star);
   }
-</script>
-<script>
-  // WebSocket connection
-  const socket = new WebSocket("wss://simplevalidator.onrender.com");
-
-  socket.addEventListener("message", (event) => {
-    const data = JSON.parse(event.data);
-    if (data.type === "note-update") {
-      const noteArea = document.getElementById("note-area");
-
-      // Prevent overwrite if user is actively typing
-      if (document.activeElement !== noteArea) {
-        noteArea.value = data.note;
-        showSaveStatus("Updated from another device");
-      }
-    }
-  });
-
-  // Log reconnect logic
-  socket.addEventListener("close", () => {
-    console.warn("WebSocket closed. Attempting to reconnect...");
-  });
 </script>
 </body>
 </html>
