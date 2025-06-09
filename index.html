@@ -3,6 +3,7 @@
 <head>
  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <title>CSS UI Design idea</title>
   <style>
@@ -63,7 +64,7 @@ font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica N
     border-radius: 50%;
     opacity: 0.8;
     animation: twinkle 3s infinite ease-in-out alternate;
-    filter: drop-shadow(0 0 1px rgba(255,255,255,0.6));
+    /*filter: drop-shadow(0 0 1px rgba(255,255,255,0.6));*/
   }
 #save-status {
   transition: opacity 0.3s ease;
@@ -192,7 +193,7 @@ function showSaveStatus(message) {
 </script>
   <script>
   const starContainer = document.querySelector(".stars");
-  const starCount = 150;
+  const starCount = 75;
   const starSizes = ["small", "medium", "large"];
   const starColors = ["blue", "yellow", "red", "white"];
 
