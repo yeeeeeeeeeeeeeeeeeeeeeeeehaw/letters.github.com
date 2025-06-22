@@ -232,7 +232,7 @@ function showSaveStatus(message) {
     const errorMsg = document.getElementById("error-message");
 
     try {
-      const response = await fetch("https://simplevalidator.onrender.com/check-passwords", {
+      const response = await fetch("https://simplevalidator.onrender.com/check-password", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ password: input })
